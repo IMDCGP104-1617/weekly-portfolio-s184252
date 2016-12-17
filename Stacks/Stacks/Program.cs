@@ -10,18 +10,17 @@ namespace Stacks
     {
         static void Main(string[] args)
         {
-            Stack myStack = new Stack();
+            Stack<string> testStack = new Stack<string>();
 
-            for(int i = 0; i < 50; i++)
-            {
-                myStack.StackPush(i);
-            }
+            var firstNode = new Node<string>("bottom of stack");
+            var secondNode = new Node<string>("middle of stack");
+            var thirdNode = new Node<string>("top of stack");
 
-            myStack.StackPush((int)300);
-            myStack.StackPop();
+            testStack.Push(firstNode);
+            testStack.Push(secondNode);
+            testStack.Push(thirdNode);
 
-            myStack.StackPrint();
-            Console.ReadLine();
+            testStack.DisplayList();
         }
     }
 }

@@ -6,165 +6,246 @@ using System.Threading.Tasks;
 
 namespace Lists
 {
-    class LinkedList
+    class LinkedList<T>
     {
-        public class Node
-        {
-            public object Content;
-            public Node Next;
-        }
+        private int size;
 
-        private Node head;
+        public Node<T> head;
 
         public LinkedList()
         {
             head = null;
+            size = 0;
         }
 
-        public void InsertBeginning(object content)
+        ~LinkedList()
         {
-            Node newNode = new Node();
-            newNode.Content = content;
+            Clear();
+        }
 
-            if(head == null)
+        public void InsertBeginning(Node<T> nodeToInsert)
+        {
+            if(IsEmpty())
+            {
+                head = nodeToInsert;
+
+                size++;
+            }
+            else
+            {
+                nodeToInsert.Next = head;
+                head = nodeToInsert;
+
+                size++;
+            }
+        }
+
+        // overloaded InsertBeginning function to create node containing entered data
+        public void InsertBeginning(T content)
+        {
+            Node<T> newNode = new Node<T>(content);
+
+            if(IsEmpty())
             {
                 head = newNode;
+
+                size++;
             }
             else
             {
                 newNode.Next = head;
                 head = newNode;
+
+                size++;
             }
         }
 
-        public void InsertAfter(Node after, object content)
+        public void InsertAfter(Node<T> existingNode, Node<T> nodeToInsert)
         {
-            Node current = head;
-            while(current != after)
+            if(IsEmpty() == false)
             {
-                current = current.Next;
-                if(current == null)
-                {
-                    break;
-                }
-            }
+                Node<T> current = head;
 
-            if(current == null)
-            {
-                System.Console.WriteLine("Node: " + after + " does not exist.");
-                return;
-            }
-            else
-            {
-                Node newNode = new Node();
-                newNode.Next = current.Next;
-                current.Next = newNode;
-                newNode.Content = content;
+                while(current != existingNode)
+                {
+                    if(current.Next == null)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+
+                if(current.Next == null)
+                {
+                    current.Next = nodeToInsert;
+                }
+                else
+                {
+                    nodeToInsert.Next = current.Next;
+                    current.Next = nodeToInsert;
+                }
+
+                size++;
             }
         }
 
-        public void AppendNode(object content)
+        // overloaded InsertAfter function to create node containing entered data
+        public void InsertAfter(Node<T> existingNode, T content)
         {
-            Node newNode = new Node();
-            newNode.Content = content;
-            Node current = head;
-            if(current == null)
+            if(IsEmpty() == false)
             {
-                head = newNode;
-            }
-            else
-            {
-                while(current.Next != null)
+                Node<T> current = head;
+
+                while(current != existingNode)
                 {
-                    current = current.Next;
+                    if(current.Next == null)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
                 }
 
-                current.Next = newNode;
-            }
-        }
+                Node<T> nodeToInsert = new Node<T>(content);
 
-        public void AppendNode(Node toAppend)
-        {
-            Node current = head;
-            if(current == null)
-            {
-                head = toAppend;
-            }
-            else
-            {
-                while(current.Next != null)
+                if(current.Next == null)
                 {
-                    current = current.Next;
+                    current.Next = nodeToInsert;
+
+                }
+                else
+                {
+                    nodeToInsert.Next = current.Next;
+                    current.Next = nodeToInsert;
                 }
 
-                current.Next = toAppend;
+                size++;
             }
         }
 
         public void RemoveBeginning()
         {
-            if(head == null)
+            if(IsEmpty() == false)
             {
-                System.Console.WriteLine("List is empty.");
-                return;
+                Node<T> temp = head;
+
+                if(head.Next != null)
+                {
+                    head = head.Next;
+                }
+                else
+                {
+                    head = null;
+                }
+
+                temp.Next = null;
+
+                size--;
             }
             else
             {
-                Node tempNode = head;
-                head = tempNode.Next;
-                tempNode = null;
+                Console.WriteLine("List is empty, cannot remove head.");
             }
         }
 
-        public void RemoveAfter(Node after)
+        public void RemoveAfter(Node<T> existingNode)
         {
-            Node current = head;
-            while(current != after)
+            if(IsEmpty() == false)
             {
-                current = current.Next;
-                if(current == null)
+                Node<T> current = head;
+
+                while(current != existingNode)
                 {
-                    break;
+                    if(current.Next == null)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+
+                if(current.Next.Next == null)
+                {
+                    current.Next = null;
+
+                    size--;
+                }
+                else
+                {
+                    Node<T> temp = current.Next.Next;
+
+                    current.Next.Next = null;
+                    current.Next = temp;
+
+                    size--;
                 }
             }
+        }
 
-            if(current == null)
+        public void Clear()
+        {
+            while(IsEmpty() == false)
             {
-                System.Console.WriteLine("Node: " + after + " does not exist.");
-                return;
+                RemoveBeginning();
+            }
+        }
+
+        // traverses list to count nodes - O(n), not as fast as Size
+        public int Length()
+        {
+            int count = 0;
+
+            Node<T> current = head;
+
+            while(current != null)
+            {
+                count++;
+                current = current.Next;
+            }
+
+            return count;
+        }
+
+        // alternative method of retrieving size of list, with a speed of O(1)
+        public int Size
+        {
+            get
+            {
+                return size;
+            }
+        }
+
+        public bool IsEmpty()
+        {
+            return (head == null);
+        }
+
+        public void DisplayList()
+        {
+            if(IsEmpty() == true)
+            {
+                Console.WriteLine("List is empty.");
             }
             else
             {
-                Node tempNode = current.Next.Next;
-                Node tempNodeDelete = current.Next;
-                current.Next = tempNode;
-                tempNodeDelete = null;
+                Node<T> current = head;
+
+                while(current != null)
+                {
+                    Console.WriteLine(current.Content);
+                    current = current.Next;
+                }
             }
-        }
-
-        public int Length()
-        {
-            int length = 0;
-            Node current = head;
-            while(current != null)
-            {
-                length++;
-                current = current.Next;
-            }
-
-            return length;
-        }
-
-        public void PrintNodes()
-        {
-            Node current = head;
-            while(current.Next != null)
-            {
-                System.Console.WriteLine(current.Content);
-                current = current.Next;
-            }
-
-            System.Console.WriteLine(current.Content);
         }
     }
 }

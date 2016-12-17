@@ -10,34 +10,41 @@ namespace Lists
     {
         static void Main(string[] args)
         {
-            // testing functions
-            DoublyLinkedList myDoubleList = new DoublyLinkedList();
-            myDoubleList.InsertBeginning(17);
-            myDoubleList.InsertBeginning(23);
-            for(int i = 0; i < 50; i++)
-            {
-                myDoubleList.AppendNode(i);
-            }
-            DoublyLinkedList.Node myNode = new DoublyLinkedList.Node();
-            myNode.Content = 171717;
-            myDoubleList.AppendNode(myNode);
-            myDoubleList.AppendNode(new DoublyLinkedList.Node(441));
+            // testing doublylinkedlist, all tests can be found in nunit test classes
+            DoublyLinkedList<int> myList = new DoublyLinkedList<int>();
 
-            LinkedList myLinkedListX = new LinkedList();
-            LinkedList myLinkedListY = new LinkedList();
+            var firstNode = new Node<int>(1);
+            var secondNode = new Node<int>(2);
+            var thirdNode = new Node<int>(3);
 
-            myLinkedListX.AppendNode(12);
-            myLinkedListX.InsertBeginning(21);
+            myList.InsertBeginning(firstNode);
 
-            for(int i = 0; i < 50; i++)
-            {
-                myLinkedListY.AppendNode(i);
-            }
+            Console.WriteLine("Size after firstNode: " + myList.Size);
 
-            myDoubleList.AppendNode(myLinkedListX);
-            myDoubleList.AppendNode(myLinkedListY);
-            myDoubleList.PrintNodes();
-            System.Console.ReadLine();
+            myList.InsertAfter(firstNode, secondNode);
+
+            Console.WriteLine("Size after secondNode: " + myList.Size);
+
+            myList.InsertBefore(secondNode, thirdNode);
+
+            Console.WriteLine("Size after thirdNode: " + myList.Size);
+
+            myList.RemoveBefore(secondNode);
+
+            Console.WriteLine("Size after removing thirdNode: " + myList.Size);
+
+            myList.InsertAfter(secondNode, thirdNode);
+
+            Console.WriteLine("Size after thirdNode again: " + myList.Size);
+
+            Console.WriteLine(myList.IsEmpty().ToString());
+
+            myList.DisplayList();
+
+            myList.Clear();
+            Console.WriteLine(myList.Size);
+            Console.WriteLine(myList.IsEmpty().ToString());
+            Console.ReadLine();
         }
     }
 }

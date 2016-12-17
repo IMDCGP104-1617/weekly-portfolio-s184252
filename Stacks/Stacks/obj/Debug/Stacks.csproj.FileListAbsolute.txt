@@ -1,6 +1,1 @@
-C:\Users\Administrator\Desktop\Stacks\Stacks\bin\Debug\Stacks.exe.config
-C:\Users\Administrator\Desktop\Stacks\Stacks\bin\Debug\Stacks.exe
-C:\Users\Administrator\Desktop\Stacks\Stacks\bin\Debug\Stacks.pdb
-C:\Users\Administrator\Desktop\Stacks\Stacks\obj\Debug\Stacks.csprojResolveAssemblyReference.cache
-C:\Users\Administrator\Desktop\Stacks\Stacks\obj\Debug\Stacks.exe
-C:\Users\Administrator\Desktop\Stacks\Stacks\obj\Debug\Stacks.pdb
+D:\Programming\Visual Studio Projects\Stacks\Stacks\bin\Debug\Stacks.exe.config

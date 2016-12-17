@@ -6,238 +6,392 @@ using System.Threading.Tasks;
 
 namespace Lists
 {
-    class DoublyLinkedList
+    class DoublyLinkedList<T>
     {
-        public class Node
-        {
-            public object Content;
-            public Node Previous;
-            public Node Next;
+        private int size;
 
-            public Node(object content = null)
-            {
-                Content = content;
-            }
-        }
-
-        private Node head;
+        public Node<T> head;
+        public Node<T> tail;
 
         public DoublyLinkedList()
         {
             head = null;
+            tail = null;
+            size = 0;
         }
 
-        // insert functions
-        public void InsertBeginning(object content)
+        ~DoublyLinkedList()
         {
-            Node newNode = new Node();
-            newNode.Content = content;
+            Clear();
+        }
 
-            if(head == null)
+        public void InsertBeginning(Node<T> nodeToInsert)
+        {
+            if(IsEmpty())
+            {
+                head = nodeToInsert;
+                tail = nodeToInsert;
+            }
+            else
+            {
+                nodeToInsert.Next = head;
+                head.Previous = nodeToInsert;
+                head = nodeToInsert;
+            }
+
+            size++;
+        }
+
+        // overloaded InsertBeginning function to create node containing entered data
+        public void InsertBeginning(T content)
+        {
+            Node<T> newNode = new Node<T>(content);
+
+            if(IsEmpty())
             {
                 head = newNode;
+                tail = newNode;
             }
             else
             {
-                Node tempNode = head;
-                newNode.Next = tempNode;
-                tempNode.Previous = newNode;
+                newNode.Next = head;
+                head.Previous = newNode;
                 head = newNode;
             }
+
+            size++;
         }
-        public void InsertBefore(Node before, object content)
+
+        public void InsertBefore(Node<T> existingNode, Node<T> nodeToInsert)
         {
-            Node current = head;
-            while(current != before)
+            if(IsEmpty() == false)
             {
-                current = current.Next;
-                if(current == null)
+                Node<T> current = head;
+
+                while(current != existingNode)
                 {
-                    break;
-                }
-            }
-
-            if(current == null)
-            {
-                System.Console.WriteLine("Node: " + before + " does not exist.");
-                return;
-            }
-            else
-            {
-                current = current.Previous;
-                Node newNode = new Node();
-                Node tempNode = current.Next;
-
-                newNode.Content = content;
-                newNode.Previous = current;
-                newNode.Next = tempNode;
-
-                tempNode.Previous = newNode;
-                current.Next = newNode;
-            }
-        }
-        public void InsertAfter(Node after, object content)
-        {
-            Node current = head;
-            while(current != after)
-            {
-                current = current.Next;
-                if(current == null)
-                {
-                    break;
-                }
-            }
-
-            if(current == null)
-            {
-                System.Console.WriteLine("Node: " + after + " does not exist.");
-                return;
-            }
-            else
-            {
-                Node newNode = new Node();
-                Node tempNode = current.Next;
-
-                newNode.Content = content;
-                newNode.Previous = current;
-                newNode.Next = tempNode;
-
-                tempNode.Previous = newNode;
-                current.Next = newNode;
-            }
-        }
-        // function overload to receive either content or node
-        public void AppendNode(object content)
-        {
-            Node newNode = new Node();
-            newNode.Content = content;
-            Node current = head;
-            if(current == null)
-            {
-                head = newNode;
-            }
-            else
-            {
-                while(current.Next != null)
-                {
-                    current = current.Next;
+                    if(current == tail)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
                 }
 
-                current.Next = newNode;
-                newNode.Previous = current;
+                if(existingNode == head)
+                {
+                    InsertBeginning(nodeToInsert);
+                }
+                else
+                {
+                    Node<T> tempNode = current.Previous;
+
+                    nodeToInsert.Next = current;
+                    nodeToInsert.Previous = tempNode;
+                    tempNode.Next = nodeToInsert;
+                    current.Previous = nodeToInsert;
+
+                    size++;
+                }
             }
         }
-        public void AppendNode(Node toAppend)
+
+        // overloaded InsertBefore function to create node containing entered data
+        public void InsertBefore(Node<T> existingNode, T content)
         {
-            Node current = head;
-            if(current == null)
+            if(IsEmpty() == false)
             {
-                head = toAppend;
-            }
-            else
-            {
-                while(current.Next != null)
+                Node<T> current = head;
+
+                while(current != existingNode)
                 {
-                    current = current.Next;
+                    if(current == tail)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
                 }
 
-                current.Next = toAppend;
-                toAppend.Previous = current;
+                if(existingNode == head)
+                {
+                    InsertBeginning(content);
+                }
+                else
+                {
+                    Node<T> tempNode = current.Previous;
+                    Node<T> newNode = new Node<T>(content);
+
+                    newNode.Next = current;
+                    newNode.Previous = tempNode;
+                    tempNode.Next = newNode;
+                    current.Previous = newNode;
+
+                    size++;
+                }
             }
         }
 
-        // remove functions
+        public void InsertAfter(Node<T> existingNode, Node<T> nodeToInsert)
+        {
+            if(IsEmpty() == false)
+            {
+                Node<T> current = head;
+
+                while(current != existingNode)
+                {
+                    if(current == tail)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+
+                if(current == tail)
+                {
+                    current.Next = nodeToInsert;
+                    nodeToInsert.Previous = current;
+                    tail = nodeToInsert;
+                }
+                else
+                {
+                    Node<T> tempNode = current.Next;
+
+                    current.Next = nodeToInsert;
+                    nodeToInsert.Previous = current;
+                    nodeToInsert.Next = tempNode;
+                    tempNode.Previous = nodeToInsert;
+                }
+
+                size++;
+            }
+        }
+
+        // overloaded InsertBefore function to create node containing entered data
+        public void InsertAfter(Node<T> existingNode, T content)
+        {
+            if(IsEmpty() == false)
+            {
+                Node<T> current = head;
+
+                while(current != existingNode)
+                {
+                    if(current == tail)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+
+                Node<T> newNode = new Node<T>(content);
+
+                if(current == tail)
+                {
+                    current.Next = newNode;
+                    newNode.Previous = current;
+                    tail = newNode;
+                }
+                else
+                {
+                    Node<T> tempNode = current.Next;
+
+                    current.Next = newNode;
+                    newNode.Previous = current;
+                    newNode.Next = tempNode;
+                    tempNode.Previous = newNode;
+                }
+
+                size++;
+            }
+        }
+
         public void RemoveBeginning()
         {
-            if(head == null)
+            if(IsEmpty() == false)
             {
-                System.Console.WriteLine("List is empty.");
-                return;
+                Node<T> temp = head;
+
+                if(head != tail)
+                {
+                    head = head.Next;
+                    head.Previous = null;
+                }
+                else
+                {
+                    head = null;
+                    tail = null;
+                }
+
+                temp.Next = null;
+
+                size--;
             }
             else
             {
-                Node tempNode = head;
-                head = tempNode.Next;
-                head.Previous = null;
-                tempNode = null;
+                Console.WriteLine("List is empty, cannot remove head.");
             }
         }
-        public void RemoveBefore(Node before)
+
+        public void RemoveBefore(Node<T> existingNode)
         {
-            Node current = head;
-            while(current != before)
+            if(IsEmpty() == false)
             {
-                current = current.Next;
-                if(current == null)
+                Node<T> current = head;
+
+                while(current != existingNode)
                 {
-                    break;
+                    if(current == tail)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+
+                if(current == head)
+                {
+                    Console.WriteLine("No node to remove.");
+                    return;
+                }
+                else if(current.Previous == head)
+                {
+                    current.Previous.Next = null;
+                    current.Previous = null;
+                    head = existingNode;
+
+                    size--;
+                }
+                else
+                {
+                    Node<T> tempPrePre = current.Previous.Previous;
+
+                    current.Previous.Previous = null;
+                    current.Previous.Next = null;
+                    current.Previous = tempPrePre;
+                    tempPrePre.Next = current;
+
+                    size--;
                 }
             }
-
-            if(current == null)
-            {
-                System.Console.WriteLine("Node: " + before + " does not exist.");
-                return;
-            }
-            else
-            {
-                Node tempNode = current.Previous.Previous;
-                Node tempNodeDelete = current.Previous;
-                current.Previous = tempNode;
-                tempNode.Next = current;
-                tempNodeDelete = null;
-            }
         }
-        public void RemoveAfter(Node after)
+
+        public void RemoveAfter(Node<T> existingNode)
         {
-            Node current = head;
-            while(current != after)
+            if(IsEmpty() == false)
             {
-                current = current.Next;
-                if(current == null)
+                Node<T> current = head;
+
+                while(current != existingNode)
                 {
-                    break;
+                    if(current == tail)
+                    {
+                        Console.WriteLine("Specified node " + existingNode.ToString() + " does not exist in list.");
+                        return;
+                    }
+                    else
+                    {
+                        current = current.Next;
+                    }
+                }
+
+                if(current.Next == null)
+                {
+                    Console.WriteLine("No node to remove.");
+                    return;
+                }
+                else if(current.Next == tail)
+                {
+                    current.Next.Previous = null;
+                    current.Next = null;
+                    tail = current;
+
+                    size--;
+                }
+                else
+                {
+                    Node<T> temp = current.Next.Next;
+
+                    current.Next.Next = null;
+                    current.Next.Previous = null;
+                    current.Next = temp;
+                    temp.Previous = current;
+
+                    size--;
                 }
             }
+        }
 
-            if(current == null)
+        public void Clear()
+        {
+            while(IsEmpty() == false)
             {
-                System.Console.WriteLine("Node: " + after + " does not exist.");
-                return;
-            }
-            else
-            {
-                Node tempNode = current.Next.Next;
-                Node tempNodeDelete = current.Next;
-                current.Next = tempNode;
-                tempNode.Previous = current;
-                tempNodeDelete = null;
+                RemoveBeginning();
             }
         }
 
-        // aux functions
+        // traverses list to count nodes - O(n), not as fast as Size
         public int Length()
         {
-            int length = 0;
-            Node current = head;
+            int count = 0;
+
+            Node<T> current = head;
+
             while(current != null)
             {
-                length++;
+                count++;
                 current = current.Next;
             }
 
-            return length;
+            return count;
         }
-        public void PrintNodes()
-        {
-            Node current = head;
-            while(current.Next != null)
-            {
-                System.Console.WriteLine(current.Content);
-                current = current.Next;
-            }
 
-            System.Console.WriteLine(current.Content);
+        // alternative method of retrieving size of list, with a speed of O(1)
+        public int Size
+        {
+            get
+            {
+                return size;
+            }
+        }
+
+        public bool IsEmpty()
+        {
+            return (head == null);
+        }
+
+        public void DisplayList()
+        {
+            if(IsEmpty() == true)
+            {
+                Console.WriteLine("List is empty.");
+            }
+            else
+            {
+                Node<T> current = head;
+
+                while(current != null)
+                {
+                    Console.WriteLine(current.Content);
+                    current = current.Next;
+                }
+            }
         }
     }
 }

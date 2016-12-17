@@ -6,96 +6,115 @@ using System.Threading.Tasks;
 
 namespace Stacks
 {
-    class Stack
+    class Stack<T>
     {
-        public class Item
-        {
-            public object Content;
-            public Item Next;
-        }
+        private int size;
+
+        public Node<T> top;
 
         public Stack()
         {
-            count = 0;
             top = null;
-        }
-
-        private Item top = null;
-        private int count = 0;
-
-        public void StackPush(object content)
-        {
-            Item newItem = new Item();
-            newItem.Content = content;
-
-            if(top == null)
-            {
-                top = newItem;
-            }
-            else
-            {
-                Item tempItem = top;
-                top = newItem;
-                newItem.Next = tempItem;
-            }
-
-            count++;
-        }
-
-        public object StackPop()
-        {
-            if(top == null)
-            {
-                System.Console.WriteLine("Stack is empty");
-                return null;
-            }
-            else
-            {
-                Item tempItem = top;
-                top = tempItem.Next;
-                count--;
-                return tempItem.Content;
-            }
-        }
-
-        public bool isEmpty()
-        {
-            if(top == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public object StackPeek()
-        {
-            return top.Content;
-        }
-
-        public int StackCount()
-        {
-            return count;
-        }
-
-        public void StackPrint()
-        {
-            Item tempItem = top;
-
-            while(tempItem != null)
-            {
-                System.Console.WriteLine(tempItem.Content);
-                tempItem = tempItem.Next;
-            }
+            size = 0;
         }
 
         ~Stack()
         {
-            while(top != null)
+            Clear();
+        }
+
+        public void Push(Node<T> nodeToPush)
+        {
+            if(IsEmpty() == true)
             {
+                top = nodeToPush;
+            }
+            else
+            {
+                nodeToPush.Next = top;
+                top = nodeToPush;
+            }
+
+            size++;
+        }
+
+        public void Push(T content)
+        {
+            Node<T> newNode = new Node<T>(content);
+
+            if(IsEmpty() == true)
+            {
+                top = newNode;
+            }
+            else
+            {
+                newNode.Next = top;
+                top = newNode;
+            }
+
+            size++;
+        }
+
+        public Node<T> Pop()
+        {
+            if(IsEmpty() == true)
+            {
+                Console.WriteLine("Stack is empty, no nodes to pop.");
+                return null;
+            }
+            else
+            {
+                Node<T> tempNode = top;
                 top = top.Next;
+                tempNode.Next = null;
+
+                size--;
+
+                return tempNode;
+            }
+        }
+
+        public T Peek()
+        {
+            return top.Content;
+        }
+
+        public void Clear()
+        {
+            while(IsEmpty() == false)
+            {
+                Pop();
+            }
+        }
+
+        public int Size
+        {
+            get
+            {
+                return size;
+            }
+        }
+
+        public bool IsEmpty()
+        {
+            return (top == null);
+        }
+
+        public void DisplayList()
+        {
+            if(IsEmpty() == true)
+            {
+                Console.WriteLine("List is empty.");
+            }
+            else
+            {
+                Node<T> current = top;
+
+                while(current != null)
+                {
+                    Console.WriteLine(current.Content);
+                    current = current.Next;
+                }
             }
         }
     }

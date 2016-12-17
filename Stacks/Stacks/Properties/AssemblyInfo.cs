@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Stacks")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("University Of Suffolk")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Stacks")]
-[assembly: AssemblyCopyright("Copyright © University Of Suffolk 2016")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2bf98ab0-10ae-483e-857c-2cb55e084169")]
+[assembly: Guid("4d693c12-fb7b-4daa-9aec-629ecdb64938")]
 
 // Version information for an assembly consists of the following four values:
 //
